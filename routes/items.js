@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express();
 const Item = mongoose.model("Items");
-const { ensureAuthenticated } = require("../helpers/auth");
+const {
+  ensureAuthenticated
+} = require("../helpers/auth");
 router.route("/add").get(ensureAuthenticated, (req, res) => {
   res.render("items/add");
 });
@@ -18,9 +20,15 @@ router
 
   .post(ensureAuthenticated, (req, res) => {
     let x = new Date(req.body.bid_date);
+    let img = req.file;
+    if (!img) {
+      req.flash("error_msg", "Please select an Image file only.");
+      res.redirect("/items/add");
+    }
+    const imageUrl = img.path;
     const newItem = new Item({
       name: req.body.name,
-      image: req.body.image,
+      image: imageUrl,
       description: req.body.description,
       user: req.user.id,
       status: req.body.status,
@@ -47,7 +55,9 @@ router.route("/show/:id").get((req, res) => {
 });
 
 router.route("/edit/:id").get(ensureAuthenticated, (req, res) => {
-  Item.findOne({ _id: req.params.id }).then(Item => {
+  Item.findOne({
+    _id: req.params.id
+  }).then(Item => {
     if (req.user.id == Item.user) {
       res.render("items/edit", {
         item: Item
@@ -60,8 +70,12 @@ router.route("/edit/:id").get(ensureAuthenticated, (req, res) => {
 });
 
 router.route("/my").get(ensureAuthenticated, (req, res) => {
-  Item.find({ user: req.user.id })
-    .sort({ bid_time: "desc" })
+  Item.find({
+      user: req.user.id
+    })
+    .sort({
+      bid_time: "desc"
+    })
     .then(items => {
       res.render("items/my", {
         items: items
@@ -81,7 +95,9 @@ router.route("/addbid/:id").post(ensureAuthenticated, (req, res) => {
   });
 });
 router.get("/user/:userId", (req, res) => {
-  Item.find({ user: req.params.userId })
+  Item.find({
+      user: req.params.userId
+    })
     .populate("user")
     .then(items => {
       res.render("items/index", {
@@ -92,7 +108,9 @@ router.get("/user/:userId", (req, res) => {
 router
   .route("/:id")
   .delete(ensureAuthenticated, (req, res) => {
-    Item.remove({ _id: req.params.id }).then(() => {
+    Item.remove({
+      _id: req.params.id
+    }).then(() => {
       req.flash("success_msg", "Item Successfully deleted.");
       res.redirect("/dashboard");
     });
@@ -102,11 +120,11 @@ router
       let x = new Date(req.body.bid_date);
 
       (item.name = req.body.name),
-        (item.image = req.body.image),
-        (item.description = req.body.description),
-        (item.user = req.user.id),
-        (item.status = req.body.status),
-        (item.bid_time = x);
+      (item.image = req.body.image),
+      (item.description = req.body.description),
+      (item.user = req.user.id),
+      (item.status = req.body.status),
+      (item.bid_time = x);
 
       item.save().then(item => {
         req.flash("success_msg", "Changes saved successfully");
