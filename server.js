@@ -59,6 +59,14 @@ const fileStorage = multer.diskStorage({
   }
 });
 
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+}
+
 app.set("view engine", "handlebars");
 
 app.use(cookieParser());
@@ -78,7 +86,8 @@ app.use(
 
 app.use(bodyParser.json());
 app.use(multer({
-  storage: fileStorage
+  storage: fileStorage,
+  fileFilter: fileFilter
 }).single('image'));
 
 app.use(passport.initialize());
