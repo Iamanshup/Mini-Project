@@ -54,20 +54,20 @@ router.route("/show/:id").get((req, res) => {
     });
 });
 
-router.route("/edit/:id").get(ensureAuthenticated, (req, res) => {
-  Item.findOne({
-    _id: req.params.id
-  }).then(Item => {
-    if (req.user.id == Item.user) {
-      res.render("items/edit", {
-        item: Item
-      });
-    } else {
-      req.flash("error_msg", "Not Authorized");
-      res.redirect("/dashboard");
-    }
-  });
-});
+// router.route("/edit/:id").get(ensureAuthenticated, (req, res) => {
+//   Item.findOne({
+//     _id: req.params.id
+//   }).then(Item => {
+//     if (req.user.id == Item.user) {
+//       res.render("items/edit", {
+//         item: Item
+//       });
+//     } else {
+//       req.flash("error_msg", "Not Authorized");
+//       res.redirect("/dashboard");
+//     }
+//   });
+// });
 
 router.route("/my").get(ensureAuthenticated, (req, res) => {
   Item.find({
