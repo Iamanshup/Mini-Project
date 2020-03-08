@@ -21,9 +21,9 @@
         <span class="dash-status">{{status}}</span>
       </td>
       <td>
-        <a class=" btn left-align" href="/items/edit/{{id}}">
+        {{!-- <a class=" btn left-align" href="/items/edit/{{id}}">
           <i class="fa fa-pencil"></i> Edit
-        </a>
+        </a> --}}
         <form action="/items/{{id}}?_method=DELETE" method="POST" id="delete-form">
           <input type="hidden" name="_method" value="DELETE">
           <button type='submit' class="btn red">
