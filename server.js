@@ -5,6 +5,7 @@ const passport = require("passport");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const methodOverride = require("method-override");
+const multer = require("multer");
 const app = express();
 const exphbs = require("express-handlebars");
 const path = require("path");
@@ -48,6 +49,16 @@ app.engine(
     defaultLayout: "main"
   })
 );
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  }
+});
+
 app.set("view engine", "handlebars");
 
 app.use(cookieParser());
@@ -64,7 +75,12 @@ app.use(
     extended: false
   })
 );
+
 app.use(bodyParser.json());
+app.use(multer({
+  storage: fileStorage
+}).single('image'));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
