@@ -9,22 +9,29 @@ const itemSchema = new mongoose.Schema({
     type: String,
     require: true
   },
-  description: { type: String, require: true },
-  user: { type: Schema.Types.ObjectId, ref: "Users" },
+  description: {
+    type: String,
+    require: true
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "Users"
+  },
   status: String,
   bid_time: {
     type: Date,
     require: true
   },
-  bids: [
-    {
-      user: { type: Schema.Types.ObjectId, ref: "Users" },
-      amount: {
-        type: Number,
-        require: String
-      }
+  bids: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "Users"
+    },
+    amount: {
+      type: Number,
+      require: String
     }
-  ],
+  }],
   date: {
     type: Date,
     default: Date.now

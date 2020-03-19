@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 const router = express();
 const User = mongoose.model("Users");
 const passport = require("passport");
-const { ensureAuthenticated } = require("../helpers/auth");
+const {
+  ensureAuthenticated
+} = require("../helpers/auth");
 router
   .route("/register")
   .get((req, res) => {
@@ -14,7 +16,8 @@ router
     const newUser = new User({
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      boatNumber: req.body.boatNumber
     });
     newUser.save(err => {
       if (err) {

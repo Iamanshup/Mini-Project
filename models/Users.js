@@ -14,9 +14,13 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  boatNumber: {
+    type: String,
+    required: true
   }
 });
-userSchema.methods.validPassword = function(password) {
+userSchema.methods.validPassword = function (password) {
   return this.password === password;
 };
 userSchema.plugin(uniqueValidator);
