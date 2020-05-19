@@ -22,23 +22,25 @@ const itemSchema = new mongoose.Schema({
 		type: Date,
 		require: true
 	},
-	bids: [
-		{
-			user: {
-				type: Schema.Types.ObjectId,
-				ref: "Users"
-			},
-			amount: {
-				type: Number,
-				require: String
-			}
+	bids: [{
+		user: {
+			type: Schema.Types.ObjectId,
+			ref: "Users"
+		},
+		amount: {
+			type: Number,
+			require: String
 		}
-	],
+	}],
 	date: {
 		type: Date,
 		default: Date.now
 	},
 	boat_number: {
+		type: String,
+		required: true
+	},
+	amount_of_fish: {
 		type: String,
 		required: true
 	}

@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express();
 const Item = mongoose.model("Items");
-const { ensureAuthenticated } = require("../helpers/auth");
+const {
+	ensureAuthenticated
+} = require("../helpers/auth");
 router.route("/add").get(ensureAuthenticated, (req, res) => {
 	res.render("items/add");
 });
@@ -31,11 +33,13 @@ router
 			user: req.user.id,
 			status: req.body.status,
 			bid_time: x,
-			boat_number: req.body.boat_number
+			boat_number: req.body.boat_number,
+			amount_of_fish: req.body.amount_of_fish
 		});
 		newItem
 			.save()
 			.then(newItem => {
+				console.log(newItem);
 				req.flash(
 					"success_msg",
 					"Congrats, new Item Posted. Come back in a while to see all bids."
@@ -56,6 +60,7 @@ router.route("/show/:id").get((req, res) => {
 		.populate("user")
 		.populate("bids.user")
 		.then(item => {
+			// console.log(item);
 			res.render("items/show", {
 				item: item
 			});
@@ -79,8 +84,8 @@ router.route("/show/:id").get((req, res) => {
 
 router.route("/my").get(ensureAuthenticated, (req, res) => {
 	Item.find({
-		user: req.user.id
-	})
+			user: req.user.id
+		})
 		.sort({
 			bid_time: "desc"
 		})
@@ -104,8 +109,8 @@ router.route("/addbid/:id").post(ensureAuthenticated, (req, res) => {
 });
 router.get("/user/:userId", (req, res) => {
 	Item.find({
-		user: req.params.userId
-	})
+			user: req.params.userId
+		})
 		.populate("user")
 		.then(items => {
 			res.render("items/index", {
@@ -128,11 +133,11 @@ router
 			let x = new Date(req.body.bid_date);
 
 			(item.name = req.body.name),
-				(item.image = req.body.image),
-				(item.description = req.body.description),
-				(item.user = req.user.id),
-				(item.status = req.body.status),
-				(item.bid_time = x);
+			(item.image = req.body.image),
+			(item.description = req.body.description),
+			(item.user = req.user.id),
+			(item.status = req.body.status),
+			(item.bid_time = x);
 
 			item.save().then(item => {
 				req.flash("success_msg", "Changes saved successfully");

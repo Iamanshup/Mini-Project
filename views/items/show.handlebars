@@ -6,7 +6,9 @@
     <div class="card">
       <div class="card-content">
         <span class="card-title"><strong>Bid Time : </strong>
-          {{formatDate item.bid_time 'MMMM Do YYYY h:mm:ss a' }}</span><br>
+          {{formatDate item.bid_time 'MMMM Do YYYY h:mm:ss a' }}</span>
+        <span class="card-title"><strong>Amount(in Kgs) : </strong>
+          {{item.amount_of_fish}}</span><br>
         <div class="card-image">
           <img src="/{{item.image}}" alt="/">
         </div>
@@ -32,19 +34,33 @@
           </div>
         </form>
         {{/if}}
-        {{#if (ifCon item.user.id user.id)}}
-        {{#each item.bids}}
-        <div class="card">
-          <div class="card-content">
-            <small>Posted by</small> <strong> {{user.username}}</strong>
-            <h5>Amount : {{amount}}</h5>
 
+        {{#if (ifCon item.user.id user.id)}}
+        <form action="#" method="POST">
+          {{#each item.bids}}
+          <div class="card">
+            <div class="card-content">
+              <small>Posted by</small> <strong> {{user.username}}</strong>
+              <h5>Amount : {{amount}}</h5>
+              {{!-- <p>
+                <label for="{{item.id}}">
+                  <input id="{{item.id}}" type="checkbox" style="opacity: 1; position: relative" />
+                  <span>Select</span>
+                </label>
+              </p> --}}
+
+            </div>
           </div>
-        </div>
+          {{!-- {{/each}} --}}
+          {{!-- <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+            <i class="material-icons right"></i>
+          </button> --}}
+        </form>
         {{else}}
         <p>Currently, no Bids to show, please come back later.</p>
         {{/each}}
         {{/if}}
+
         {{else}}
         <p>Please <a href="/users/login">Log In </a>to Bid on Items</p>
         {{/if}}
