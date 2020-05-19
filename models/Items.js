@@ -43,6 +43,10 @@ const itemSchema = new mongoose.Schema({
 	amount_of_fish: {
 		type: String,
 		required: true
+	},
+	grade: {
+		type: String,
+		required: true
 	}
 });
 

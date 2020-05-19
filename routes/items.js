@@ -34,7 +34,8 @@ router
 			status: req.body.status,
 			bid_time: x,
 			boat_number: req.body.boat_number,
-			amount_of_fish: req.body.amount_of_fish
+			amount_of_fish: req.body.amount_of_fish,
+			grade: req.body.grade
 		});
 		newItem
 			.save()
