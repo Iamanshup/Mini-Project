@@ -4,23 +4,27 @@ const userSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		required: true,
-		unique: true
+		unique: true,
 	},
 	email: {
 		type: String,
 		unique: true,
-		required: true
+		required: true,
 	},
 	password: {
 		type: String,
-		required: true
+		required: true,
+	},
+	address: {
+		type: String,
+		required: true,
+	},
+	aadhaar_number: {
+		type: String,
+		required: true,
 	}
-	// boatNumber: {
-	//   type: String,
-	//   required: true
-	// }
 });
-userSchema.methods.validPassword = function(password) {
+userSchema.methods.validPassword = function (password) {
 	return this.password === password;
 };
 userSchema.plugin(uniqueValidator);
