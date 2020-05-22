@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
 	aadhaar_number: {
 		type: String,
 		required: true,
+	},
+	isAdmin: {
+		type: Boolean,
+		default: false
 	}
 });
 userSchema.methods.validPassword = function (password) {

@@ -11,6 +11,15 @@
           <a href="/dashboard">Welcome {{user.username}}
           </a>
         </li>
+
+        {{#if user.isAdmin}}
+        <li>
+          <a href="/boats/add">
+            Add New Boat
+          </a>
+        </li>
+        {{/if}}
+
         <li>
           <a href="/users/logout">
             <i class="fa fa-sign-out"></i> Logout

@@ -15,6 +15,7 @@ const flash = require("connect-flash");
 const users = require("./routes/users");
 const items = require("./routes/items");
 const index = require("./routes/index");
+const boats = require("./routes/boats");
 const {
   truncate,
   formatDate,
@@ -107,6 +108,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/users", users);
 app.use("/items", items);
+app.use("/boats", boats);
 app.use("/", index);
 const port = process.env.PORT || 5000;
 
