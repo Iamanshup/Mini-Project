@@ -13,6 +13,10 @@ const boatSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  date_created: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const boatModel = mongoose.model("Boats", boatSchema);
