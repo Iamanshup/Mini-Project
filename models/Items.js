@@ -32,7 +32,7 @@ const itemSchema = new mongoose.Schema({
 			require: String
 		}
 	}],
-	date: {
+	date_created: {
 		type: Date,
 		default: Date.now
 	},
