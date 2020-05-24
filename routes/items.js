@@ -98,6 +98,14 @@ router.route("/my").get(ensureAuthenticated, (req, res) => {
 });
 router.route("/addbid/:id").post(ensureAuthenticated, (req, res) => {
 	Item.findById(req.params.id).then(item => {
+		if (!req.body.amount) {
+			req.flash("error_msg", "Please provide a valid amount.");
+			return res.redirect(`/items/show/${req.params.id}`);
+		}
+		if (!req.body.fish_amount) {
+			req.flash("error_msg", "Please provide a valid amount of fish.");
+			return res.redirect(`/items/show/${req.params.id}`);
+		}
 		const newBid = {
 			amount: req.body.amount,
 			fish_amount: req.body.fish_amount,
