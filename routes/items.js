@@ -100,6 +100,7 @@ router.route("/addbid/:id").post(ensureAuthenticated, (req, res) => {
 	Item.findById(req.params.id).then(item => {
 		const newBid = {
 			amount: req.body.amount,
+			fish_amount: req.body.fish_amount,
 			user: req.user.id
 		};
 		item.bids.unshift(newBid);

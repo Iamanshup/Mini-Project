@@ -26,10 +26,12 @@
         {{else}}
         <span class="card-title">Let's Bid</span>
         <form action="/items/addbid/{{item.id}}" method="post">
-          <div class="input-field"><label for="amount">
+          <div class="input-field">
+            {{!-- <label for="amount">
               Enter bidding amount
-            </label>
-            <input type="text" name="amount" id="amount">
+            </label> --}}
+            <input type="text" name="amount" id="amount" placeholder="Enter bidding amount">
+            <input type="text" name="fish_amount" id="fish_amount" placeholder="Enter fish amount(in Kgs)">
             <input class="btn-large" type="submit" value="Place Bid">
           </div>
         </form>
@@ -41,7 +43,8 @@
           <div class="card">
             <div class="card-content">
               <small>Posted by</small> <strong> {{user.username}}</strong>
-              <h5>Amount : {{amount}}</h5>
+              <h5>Amount : Rs. {{amount}}</h5>
+              <h5>Fish Amount : {{fish_amount}} Kgs</h5>
               {{!-- <p>
                 <label for="{{item.id}}">
                   <input id="{{item.id}}" type="checkbox" style="opacity: 1; position: relative" />

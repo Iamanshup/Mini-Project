@@ -30,6 +30,10 @@ const itemSchema = new mongoose.Schema({
 		amount: {
 			type: Number,
 			require: String
+		},
+		fish_amount: {
+			type: Number,
+			require: true
 		}
 	}],
 	date_created: {
