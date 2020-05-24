@@ -16,6 +16,7 @@ const users = require("./routes/users");
 const items = require("./routes/items");
 const index = require("./routes/index");
 const boats = require("./routes/boats");
+const reports = require("./routes/reports");
 const {
   truncate,
   formatDate,
@@ -109,6 +110,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/users", users);
 app.use("/items", items);
 app.use("/boats", boats);
+app.use("/reports", reports);
 app.use("/", index);
 const port = process.env.PORT || 5000;
 
