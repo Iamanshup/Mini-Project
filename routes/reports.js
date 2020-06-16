@@ -6,7 +6,10 @@ const Boat = mongoose.model("Boats");
 const {
   ensureAuthenticated
 } = require("../helpers/auth");
+
+// Code to show the search reports form
 router.route("/").get(ensureAuthenticated, (req, res) => {
+    // If the user is not an admin, redirect to main page
     if (!req.user.isAdmin) {
       req.flash(
         "error_msg",
@@ -16,7 +19,11 @@ router.route("/").get(ensureAuthenticated, (req, res) => {
     }
     res.render("reports/search");
   })
+
+  // Code to find the auctions/boats as defined in search field
+  // and then show it on the results page
   .post(ensureAuthenticated, (req, res) => {
+    // If the user is not an admin, redirect to main page
     if (!req.user.isAdmin) {
       req.flash(
         "error_msg",
@@ -24,12 +31,13 @@ router.route("/").get(ensureAuthenticated, (req, res) => {
       );
       return res.redirect("/");
     }
-    // console.log(req.body);
+
+    // Extract data from request to search in database
     let report = req.body.report;
     let start_date = new Date(req.body.start_date).toISOString();
     let end_date = new Date(req.body.end_date).toISOString()
 
-    console.log(report, start_date, end_date);
+    // Code to search boats/auctions registered between two given dates
     if (report == "boats") {
       Boat.find({
         date_created: {
@@ -56,19 +64,5 @@ router.route("/").get(ensureAuthenticated, (req, res) => {
       });
     }
   });
-// router.route("/about").get((req, res) => {
-//   res.render("index/about");
-// });
 
-// router.route("/dashboard").get(ensureAuthenticated, (req, res) => {
-//   Item.find({ user: req.user.id }).then(items => {
-//     res.render("index/dashboard", {
-//       items: items
-//     });
-//   });
-// });
-
-// router.route("/about").get((req, res) => {
-//   res.send("index/about");
-// });
 module.exports = router;
