@@ -2,68 +2,85 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express();
 const Item = mongoose.model("Items");
-const {
-	ensureAuthenticated
-} = require("../helpers/auth");
+const Boat = mongoose.model("Boats");
+const { ensureAuthenticated } = require("../helpers/auth");
+
 router.route("/add").get(ensureAuthenticated, (req, res) => {
 	res.render("items/add");
 });
+
 router
 	.route("/")
 	.get((req, res) => {
-		Item.find().then(items => {
+		Item.find().then((items) => {
 			res.render("items/index", {
-				items: items
+				items: items,
 			});
 		});
 	})
 
 	.post(ensureAuthenticated, (req, res) => {
+		// x contains the extracted bid date from request in the Date object format
 		let x = new Date(req.body.bid_date);
 		let img = req.file;
 		if (!img) {
 			req.flash("error_msg", "Please select an Image file only.");
 			res.redirect("/items/add");
 		}
-		const imageUrl = img.path;
-		const newItem = new Item({
-			name: req.body.name,
-			image: imageUrl,
-			description: req.body.description,
-			user: req.user.id,
-			status: req.body.status,
-			bid_time: x,
-			boat_number: req.body.boat_number,
-			amount_of_fish: req.body.amount_of_fish,
-			grade: req.body.grade
-		});
-		newItem
-			.save()
-			.then(newItem => {
-				console.log(newItem);
-				req.flash(
-					"success_msg",
-					"Congrats, new Item Posted. Come back in a while to see all bids."
-				);
-				res.redirect(`items/show/${newItem._id}`);
+
+		let boat_number = req.body.boat_number;
+		Boat.find({
+			boat_number: boat_number,
+		})
+			.then((boat) => {
+				// console.log(boat);
+				if (boat.length == 0) {
+					req.flash("error_msg", "That boat number is not registered.");
+					return res.redirect("/items/add");
+				}
+
+				const imageUrl = img.path;
+				const newItem = new Item({
+					name: req.body.name,
+					image: imageUrl,
+					description: req.body.description,
+					user: req.user.id,
+					status: req.body.status,
+					bid_time: x,
+					boat_number: boat_number,
+					amount_of_fish: req.body.amount_of_fish,
+					grade: req.body.grade,
+				});
+				newItem
+					.save()
+					.then((newItem) => {
+						console.log(newItem);
+						req.flash(
+							"success_msg",
+							"Congrats, new Item Posted. Come back in a while to see all bids."
+						);
+						// redirect to item description page
+						res.redirect(`items/show/${newItem._id}`);
+					})
+					.catch((err) => {
+						req.flash(
+							"error_msg",
+							"Some error occurred. Please check all the fields."
+						);
+						res.redirect("/items/add");
+					});
 			})
-			.catch(err => {
-				req.flash(
-					"error_msg",
-					"Some error occurred. Please check all the fields."
-				);
-				res.redirect("/items/add");
-			});
+			.catch((err) => console.log(err));
 	});
 
 router.route("/show/:id").get((req, res) => {
 	Item.findById(req.params.id)
-		.populate("user")
+		.populate("user") // Populate replaces the id with all the other information of the user
 		.populate("bids.user")
-		.then(item => {
+		.then((item) => {
 			// console.log(item);
 			res.render("items/show", {
-				item: item
+				item: item,
 			});
 		});
 });
@@ -85,19 +102,20 @@ router.route("/show/:id").get((req, res) => {
 
 router.route("/my").get(ensureAuthenticated, (req, res) => {
 	Item.find({
-			user: req.user.id
-		})
+		user: req.user.id,
+	})
 		.sort({
-			bid_time: "desc"
+			bid_time: "desc",
 		})
-		.then(items => {
+		.then((items) => {
 			res.render("items/my", {
-				items: items
+				items: items,
 			});
 		});
 });
+
 router.route("/addbid/:id").post(ensureAuthenticated, (req, res) => {
-	Item.findById(req.params.id).then(item => {
+	Item.findById(req.params.id).then((item) => {
 		if (!req.body.amount) {
 			req.flash("error_msg", "Please provide a valid amount.");
 			return res.redirect(`/items/show/${req.params.id}`);
@@ -109,50 +127,50 @@ router.route("/addbid/:id").post(ensureAuthenticated, (req, res) => {
 		const newBid = {
 			amount: req.body.amount,
 			fish_amount: req.body.fish_amount,
-			user: req.user.id
+			user: req.user.id,
 		};
-		item.bids.unshift(newBid);
+		item.bids.unshift(newBid); // append the new bid in the bids array of the item
 		item.save();
 		req.flash("success_msg", "Your Bid was successfully placed");
 		res.redirect(`/items/show/${req.params.id}`);
 	});
 });
+
 router.get("/user/:userId", (req, res) => {
 	Item.find({
-			user: req.params.userId
-		})
+		user: req.params.userId,
+	})
 		.populate("user")
-		.then(items => {
+		.then((items) => {
 			res.render("items/index", {
-				items: items
+				items: items,
 			});
 		});
 });
-router
-	.route("/:id")
-	.delete(ensureAuthenticated, (req, res) => {
-		Item.remove({
-			_id: req.params.id
-		}).then(() => {
-			req.flash("success_msg", "Item Successfully deleted.");
-			res.redirect("/dashboard");
-		});
-	})
-	.put(ensureAuthenticated, (req, res) => {
-		Item.findById(req.params.id).then(item => {
-			let x = new Date(req.body.bid_date);
 
-			(item.name = req.body.name),
-			(item.image = req.body.image),
-			(item.description = req.body.description),
-			(item.user = req.user.id),
-			(item.status = req.body.status),
-			(item.bid_time = x);
-
-			item.save().then(item => {
-				req.flash("success_msg", "Changes saved successfully");
-				res.redirect(`/items/show/${item._id}`);
-			});
-		});
+router.route("/:id").delete(ensureAuthenticated, (req, res) => {
+	Item.remove({
+		_id: req.params.id,
+	}).then(() => {
+		req.flash("success_msg", "Item Successfully deleted.");
+		res.redirect("/dashboard");
 	});
+});
+// .put(ensureAuthenticated, (req, res) => {
+// 	Item.findById(req.params.id).then(item => {
+// 		let x = new Date(req.body.bid_date);
+
+// 		(item.name = req.body.name),
+// 		(item.image = req.body.image),
+// 		(item.description = req.body.description),
+// 		(item.user = req.user.id),
+// 		(item.status = req.body.status),
+// 		(item.bid_time = x);
+
+// 		item.save().then(item => {
+// 			req.flash("success_msg", "Changes saved successfully");
+// 			res.redirect(`/items/show/${item._id}`);
+// 		});
+// 	});
+// });
 module.exports = router;
