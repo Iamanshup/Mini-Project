@@ -170,7 +170,7 @@ router.get("/user/:userId", (req, res) => {
 
 // Code to delete an auction
 // A user can delete only the auctions he himself created
-router.route("/:id").delete(ensureAuthenticated, (req, res) => {
+router.route("/:id").delete(ensureAuthenticated, (req, res) => { // id is the id of the item to be deleted
 	Item.findById(req.params.id).then(item => {
 
 		// If some other user is trying to delete current user's auction
