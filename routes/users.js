@@ -31,18 +31,16 @@ router
 				res.redirect("/users/login");
 			}
 		});
-
-		// else {
-		//   res.redirect("/users/login");
-		//   req.flash("success_msg", "Congratulation, You can now Login");
-		//   res.redirect("/users/login");
-		// }
 	});
 router
 	.route("/login")
+
+	// Code to show login form
 	.get((req, res) => {
 		res.render("users/login");
 	})
+
+	// code to log the user in
 	.post((req, res, next) => {
 		passport.authenticate("local", {
 			successRedirect: "/dashboard",
@@ -51,9 +49,11 @@ router
 		})(req, res, next);
 	});
 
+// Code to log the user out
 router.get("/logout", ensureAuthenticated, (req, res) => {
 	req.logout();
 	req.flash("success_msg", "You are logged out");
 	res.redirect("/");
 });
+
 module.exports = router;
