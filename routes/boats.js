@@ -6,6 +6,9 @@ const passport = require("passport");
 const {
   ensureAuthenticated
 } = require("../helpers/auth");
+
+// To go to  boats/add page a user should be authenticated and he should be an admin
+// If both are true render boats/add page
 router.route("/add").get(ensureAuthenticated, (req, res) => {
   if (!req.user.isAdmin) {
     req.flash(
@@ -16,16 +19,13 @@ router.route("/add").get(ensureAuthenticated, (req, res) => {
   }
   res.render("boats/add");
 });
+
 router
   .route("/")
-  // .get((req, res) => {
-  //   Boats.find().then(boats => {
-  //     res.render("boats/index", {
-  //       boats: boats
-  //     });
-  //   });
-  // })
 
+  // To add a boat to database the user should be authenticated
+  // If he is, then receive data from request(page) and store it in database
+  // If any error render boats/add page
   .post(ensureAuthenticated, (req, res) => {
     const newBoat = new Boat({
       owner_name: req.body.owner_name,
@@ -50,22 +50,5 @@ router
         res.redirect("/boats/add");
       });
   });
-// router
-//   .route("/login")
-//   .get((req, res) => {
-//     res.render("users/login");
-//   })
-//   .post((req, res, next) => {
-//     passport.authenticate("local", {
-//       successRedirect: "/dashboard",
-//       failureRedirect: "/users/login",
-//       failureFlash: true
-//     })(req, res, next);
-//   });
 
-// router.get("/logout", ensureAuthenticated, (req, res) => {
-//   req.logout();
-//   req.flash("success_msg", "You are logged out");
-//   res.redirect("/");
-// });
 module.exports = router;
